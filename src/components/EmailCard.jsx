@@ -6,6 +6,7 @@ export default function EmailCard({
   lead,
   onMarkSent,
   onSkip,
+  onUpdateResponse,
   collapsed: initialCollapsed = false
 }) {
   const [expanded, setExpanded] = useState(!initialCollapsed && lead.status === 'generated');
@@ -39,15 +40,26 @@ export default function EmailCard({
     await navigator.clipboard.writeText(fullEmail);
   };
 
-  const statusColors = {
-    new: 'bg-gray-100',
-    generated: 'bg-yellow-50 border-yellow-200',
-    sent: 'bg-green-50 border-green-200',
-    skipped: 'bg-gray-50 border-gray-200'
+  // Determine card color based on status and response
+  const getStatusColor = () => {
+    if (lead.status === 'sent') {
+      switch (lead.responseStatus) {
+        case 'positive': return 'bg-emerald-50 border-emerald-300';
+        case 'negative': return 'bg-red-50 border-red-200';
+        case 'no_response': return 'bg-amber-50 border-amber-200';
+        default: return 'bg-green-50 border-green-200';
+      }
+    }
+    const colors = {
+      new: 'bg-gray-100',
+      generated: 'bg-yellow-50 border-yellow-200',
+      skipped: 'bg-gray-50 border-gray-200'
+    };
+    return colors[lead.status] || 'bg-gray-100';
   };
 
   return (
-    <div className={`email-card rounded-lg border ${statusColors[lead.status]} overflow-hidden`}>
+    <div className={`email-card rounded-lg border ${getStatusColor()} overflow-hidden`}>
       {/* Collapsed Header */}
       <div
         onClick={() => setExpanded(!expanded)}
@@ -59,8 +71,17 @@ export default function EmailCard({
               {lead.status === 'generated' && (
                 <span className="w-2 h-2 bg-yellow-500 rounded-full inline-block"></span>
               )}
-              {lead.status === 'sent' && (
+              {lead.status === 'sent' && !lead.responseStatus && (
                 <span className="w-2 h-2 bg-green-500 rounded-full inline-block"></span>
+              )}
+              {lead.status === 'sent' && lead.responseStatus === 'positive' && (
+                <span className="w-2 h-2 bg-emerald-600 rounded-full inline-block"></span>
+              )}
+              {lead.status === 'sent' && lead.responseStatus === 'negative' && (
+                <span className="w-2 h-2 bg-red-500 rounded-full inline-block"></span>
+              )}
+              {lead.status === 'sent' && lead.responseStatus === 'no_response' && (
+                <span className="w-2 h-2 bg-amber-500 rounded-full inline-block"></span>
               )}
               {lead.status === 'new' && (
                 <span className="w-2 h-2 bg-gray-400 rounded-full inline-block"></span>
@@ -178,20 +199,69 @@ export default function EmailCard({
               )}
 
               {/* Actions */}
-              <div className="pt-3 flex items-center gap-2 flex-wrap">
-                <button
-                  onClick={() => onMarkSent(lead.id)}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
-                >
-                  Mark as Sent
-                </button>
-                <button
-                  onClick={() => onSkip(lead.id)}
-                  className="px-4 py-2 text-gray-500 hover:text-gray-700 text-sm"
-                >
-                  Skip
-                </button>
-              </div>
+              {lead.status !== 'sent' && (
+                <div className="pt-3 flex items-center gap-2 flex-wrap">
+                  <button
+                    onClick={() => onMarkSent(lead.id)}
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
+                  >
+                    Mark as Sent
+                  </button>
+                  <button
+                    onClick={() => onSkip(lead.id)}
+                    className="px-4 py-2 text-gray-500 hover:text-gray-700 text-sm"
+                  >
+                    Skip
+                  </button>
+                </div>
+              )}
+
+              {/* Response Tracking for Sent Emails */}
+              {lead.status === 'sent' && (
+                <div className="pt-3">
+                  <span className="text-sm font-medium text-gray-700 block mb-2">Track Response</span>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <button
+                      onClick={() => onUpdateResponse(lead.id, 'positive')}
+                      className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                        lead.responseStatus === 'positive'
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
+                      }`}
+                    >
+                      Positive
+                    </button>
+                    <button
+                      onClick={() => onUpdateResponse(lead.id, 'negative')}
+                      className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                        lead.responseStatus === 'negative'
+                          ? 'bg-red-600 text-white'
+                          : 'bg-red-100 text-red-700 hover:bg-red-200'
+                      }`}
+                    >
+                      Negative
+                    </button>
+                    <button
+                      onClick={() => onUpdateResponse(lead.id, 'no_response')}
+                      className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                        lead.responseStatus === 'no_response'
+                          ? 'bg-amber-600 text-white'
+                          : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                      }`}
+                    >
+                      No Response
+                    </button>
+                    {lead.responseStatus && (
+                      <button
+                        onClick={() => onUpdateResponse(lead.id, null)}
+                        className="px-3 py-1.5 text-gray-500 hover:text-gray-700 text-sm"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
             </>
           ) : (
             /* No email generated yet */

@@ -10,7 +10,13 @@ export default function ControlPanel({
   categoryFilter,
   onCategoryChange,
   statusFilter,
-  onStatusChange
+  onStatusChange,
+  responseFilter,
+  onResponseChange,
+  minDays,
+  onMinDaysChange,
+  maxDays,
+  onMaxDaysChange
 }) {
   return (
     <div className="space-y-6">
@@ -92,6 +98,49 @@ export default function ControlPanel({
           <option value="sent">Sent</option>
           <option value="skipped">Skipped</option>
         </select>
+      </div>
+
+      {/* Response Filter (only shows when status is 'sent' or 'all') */}
+      {(statusFilter === 'all' || statusFilter === 'sent') && (
+        <div>
+          <label className="block text-sm text-gray-600 mb-1">Response</label>
+          <select
+            value={responseFilter}
+            onChange={(e) => onResponseChange(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="all">All Responses</option>
+            <option value="positive">Positive</option>
+            <option value="negative">Negative</option>
+            <option value="no_response">No Response</option>
+            <option value="untracked">Not Tracked Yet</option>
+          </select>
+        </div>
+      )}
+
+      {/* Date Filter - Days Until Event */}
+      <div>
+        <label className="block text-sm text-gray-600 mb-1">Days Until Event</label>
+        <div className="flex gap-2 items-center">
+          <input
+            type="number"
+            placeholder="Min"
+            value={minDays}
+            onChange={(e) => onMinDaysChange(e.target.value)}
+            min="0"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          <span className="text-gray-400">to</span>
+          <input
+            type="number"
+            placeholder="Max"
+            value={maxDays}
+            onChange={(e) => onMaxDaysChange(e.target.value)}
+            min="0"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+        <p className="text-xs text-gray-400 mt-1">Annual events (month/day only)</p>
       </div>
 
       {/* Keyboard shortcuts */}

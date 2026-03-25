@@ -3,7 +3,8 @@ import EmailCard from './EmailCard';
 export default function EmailQueue({
   leads,
   onMarkSent,
-  onSkip
+  onSkip,
+  onUpdateResponse
 }) {
   if (leads.length === 0) {
     return (
@@ -38,7 +39,8 @@ export default function EmailQueue({
                 lead={lead}
                 onMarkSent={onMarkSent}
                 onSkip={onSkip}
-                              />
+                onUpdateResponse={onUpdateResponse}
+              />
             ))}
           </div>
         </div>
@@ -58,7 +60,8 @@ export default function EmailQueue({
                 lead={lead}
                 onMarkSent={onMarkSent}
                 onSkip={onSkip}
-                                collapsed
+                onUpdateResponse={onUpdateResponse}
+                collapsed
               />
             ))}
             {newLeads.length > 20 && (
@@ -72,7 +75,7 @@ export default function EmailQueue({
 
       {/* Sent */}
       {sentLeads.length > 0 && (
-        <div className="opacity-60">
+        <div>
           <h2 className="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
             <span className="w-2 h-2 bg-green-500 rounded-full"></span>
             Sent ({sentLeads.length})
@@ -84,7 +87,8 @@ export default function EmailQueue({
                 lead={lead}
                 onMarkSent={onMarkSent}
                 onSkip={onSkip}
-                                collapsed
+                onUpdateResponse={onUpdateResponse}
+                collapsed
               />
             ))}
             {sentLeads.length > 10 && (
@@ -110,7 +114,8 @@ export default function EmailQueue({
                 lead={lead}
                 onMarkSent={onMarkSent}
                 onSkip={onSkip}
-                                collapsed
+                onUpdateResponse={onUpdateResponse}
+                collapsed
               />
             ))}
             {skippedLeads.length > 5 && (

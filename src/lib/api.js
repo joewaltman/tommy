@@ -68,3 +68,10 @@ export async function resetLead(leadId) {
     body: JSON.stringify({ leadId })
   });
 }
+
+export async function updateResponse(leadId, responseStatus) {
+  return fetchJson('/update-response', {
+    method: 'POST',
+    body: JSON.stringify({ leadId, responseStatus })
+  });
+}

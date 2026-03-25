@@ -1,125 +1,139 @@
 // Smart trip recommendations based on organization characteristics
 
 export const TRIPS = {
-  // Luxury/High-End
-  tuscany: {
-    name: 'Tuscany Wine Experience',
-    price: '$4,995',
-    description: '7-night villa stay with wine tours',
-    tags: ['luxury', 'wine', 'cultural', 'italy']
+  // Budget-Friendly ($1,295-$1,995)
+  las_vegas: {
+    name: 'Las Vegas Experience',
+    price: '$1,295',
+    description: '3-night Vegas getaway for 2',
+    tags: ['domestic', 'budget', 'entertainment', 'accessible']
   },
-  amalfi: {
-    name: 'Amalfi Coast Retreat',
-    price: '$5,495',
-    description: '6-night coastal Italian getaway',
-    tags: ['luxury', 'beach', 'italy', 'romantic']
+  punta_cana: {
+    name: 'Punta Cana All-Inclusive',
+    price: '$1,795',
+    description: '4-night all-inclusive for 2',
+    tags: ['beach', 'budget', 'caribbean', 'accessible']
   },
-  ferrari: {
-    name: 'Ferrari Driving Experience',
-    price: '$3,995',
-    description: 'Exotic car adventure in Italy',
-    tags: ['luxury', 'adventure', 'professional', 'italy']
+  nashville: {
+    name: 'Nashville Opry Getaway',
+    price: '$1,995',
+    description: '3-night Nashville experience for 2',
+    tags: ['domestic', 'budget', 'music', 'accessible']
   },
-  mykonos: {
-    name: 'Mykonos Greek Escape',
-    price: '$4,795',
-    description: '5-night Greek island luxury',
-    tags: ['luxury', 'beach', 'greece', 'professional']
+  cabo: {
+    name: 'Fiesta en Mexico (Cabo or Cancun)',
+    price: '$1,995',
+    description: '4-night Mexico getaway for 2',
+    tags: ['beach', 'budget', 'mexico', 'accessible']
+  },
+  dove_hunt: {
+    name: 'Argentinian Dove Hunting',
+    price: '$1,995',
+    description: '5-night hunt for 4 guests',
+    tags: ['adventure', 'sports', 'hunting', 'group']
   },
 
-  // Mid-Range Popular
-  kentucky_bourbon: {
-    name: 'Kentucky Bourbon Trail',
+  // Mid-Range ($2,495-$3,995)
+  tuscany: {
+    name: 'Tuscany Wine Experience',
     price: '$2,495',
-    description: '4-night bourbon experience',
-    tags: ['domestic', 'culinary', 'popular', 'accessible']
+    description: '6-night villa stay for 2',
+    tags: ['luxury', 'wine', 'cultural', 'italy']
   },
   costa_rica: {
     name: 'Costa Rica Adventure',
-    price: '$2,995',
-    description: '6-night eco-adventure',
+    price: '$2,495',
+    description: '5-night eco-adventure for 2',
     tags: ['adventure', 'nature', 'family', 'popular']
   },
+  kentucky_bourbon: {
+    name: 'Kentucky Bourbon Trail',
+    price: '$2,495',
+    description: '3-night bourbon experience for 2',
+    tags: ['domestic', 'culinary', 'popular', 'accessible']
+  },
+  rome: {
+    name: 'Rome, Italy',
+    price: '$3,495',
+    description: '4-night Roman holiday for 2',
+    tags: ['cultural', 'italy', 'popular', 'heritage']
+  },
+  iceland: {
+    name: 'Iceland Adventure',
+    price: '$3,995',
+    description: '5-night Nordic adventure for 2',
+    tags: ['adventure', 'nature', 'unique', 'luxury']
+  },
+
+  // Premium ($4,595-$10,995)
+  paris: {
+    name: 'Paris, France',
+    price: '$4,595',
+    description: '5-night Parisian escape for 2',
+    tags: ['luxury', 'france', 'romantic', 'cultural']
+  },
+  swiss_summer: {
+    name: 'Swiss Summer',
+    price: '$4,995',
+    description: '4-night Swiss Alps experience for 2',
+    tags: ['luxury', 'adventure', 'nature', 'europe']
+  },
+  mykonos: {
+    name: 'Mykonos Luxury Villa',
+    price: '$10,995',
+    description: '5-night Greek villa for 6 guests',
+    tags: ['luxury', 'beach', 'greece', 'group']
+  },
+
+  // Ultra-Luxury / Signature Events ($18,950+)
+  us_masters: {
+    name: '2027 US Masters',
+    price: '$18,950',
+    description: '3-night Augusta experience for 2',
+    tags: ['golf', 'ultra-luxury', 'exclusive', 'sports']
+  },
+  monaco_gp: {
+    name: 'Monaco Grand Prix',
+    price: '$29,950',
+    description: '3-night Monaco F1 experience for 2',
+    tags: ['ultra-luxury', 'exclusive', 'motorsport', 'europe']
+  },
+  costa_rica_paradise: {
+    name: 'Costa Rican Paradise',
+    price: '$34,950',
+    description: '6-night luxury retreat for 10 guests',
+    tags: ['ultra-luxury', 'group', 'nature', 'exclusive']
+  },
+
+  // Heritage/Cultural
   dublin: {
     name: 'Dublin & Irish Countryside',
     price: '$3,295',
-    description: '6-night Ireland experience',
+    description: '6-night Ireland experience for 2',
     tags: ['cultural', 'ireland', 'popular', 'accessible']
-  },
-  napa: {
-    name: 'Napa Valley Wine Escape',
-    price: '$2,795',
-    description: '4-night California wine country',
-    tags: ['domestic', 'wine', 'luxury', 'accessible']
-  },
-
-  // Budget-Friendly
-  nashville: {
-    name: 'Nashville Music City',
-    price: '$1,995',
-    description: '3-night Nashville experience',
-    tags: ['domestic', 'budget', 'music', 'accessible']
-  },
-  las_vegas: {
-    name: 'Las Vegas Getaway',
-    price: '$1,295',
-    description: '3-night Vegas experience',
-    tags: ['domestic', 'budget', 'entertainment', 'accessible']
-  },
-  sedona: {
-    name: 'Sedona Wellness Retreat',
-    price: '$2,195',
-    description: '4-night Arizona spa experience',
-    tags: ['domestic', 'wellness', 'nature', 'accessible']
-  },
-
-  // Cultural Heritage Specific
-  spain: {
-    name: 'Spain & Barcelona',
-    price: '$3,795',
-    description: '7-night Spanish adventure',
-    tags: ['cultural', 'spain', 'heritage', 'luxury']
-  },
-  paris: {
-    name: 'Paris Romance',
-    price: '$3,995',
-    description: '5-night Parisian escape',
-    tags: ['luxury', 'france', 'romantic', 'cultural']
   },
   scotland: {
     name: 'Scottish Highlands',
     price: '$3,495',
-    description: '6-night Scotland experience',
+    description: '6-night Scotland experience for 2',
     tags: ['golf', 'cultural', 'scotland', 'adventure']
-  },
-
-  // Golf Specific
-  pebble_beach: {
-    name: 'Pebble Beach Golf',
-    price: '$4,995',
-    description: 'Iconic California golf package',
-    tags: ['golf', 'luxury', 'domestic', 'sports']
-  },
-  st_andrews: {
-    name: 'St Andrews Golf Pilgrimage',
-    price: '$5,995',
-    description: 'The home of golf experience',
-    tags: ['golf', 'luxury', 'scotland', 'sports']
   }
 };
 
 // Heritage matching for international/cultural orgs
 const HERITAGE_TRIPS = {
-  italian: ['tuscany', 'amalfi', 'ferrari'],
-  spanish: ['spain'],
-  hispanic: ['spain', 'costa_rica'],
+  italian: ['tuscany', 'rome'],
+  spanish: ['cabo'],
+  hispanic: ['cabo', 'costa_rica', 'punta_cana'],
   irish: ['dublin'],
   french: ['paris'],
   greek: ['mykonos'],
-  scottish: ['scotland', 'st_andrews'],
-  german: ['tuscany'], // Closest European option
+  scottish: ['scotland'],
+  german: ['swiss_summer', 'tuscany'],
   polish: ['tuscany'],
-  romanian: ['tuscany', 'mykonos']
+  romanian: ['tuscany', 'mykonos'],
+  mexican: ['cabo'],
+  caribbean: ['punta_cana']
 };
 
 export function getRecommendedTrips(lead, classification) {
@@ -139,19 +153,19 @@ export function getRecommendedTrips(lead, classification) {
   // 2. Category-specific recommendations
   switch (category) {
     case 'sports_recreation':
-      recommended.push('pebble_beach', 'st_andrews', 'scotland');
+      recommended.push('us_masters', 'scotland', 'dove_hunt');
       break;
     case 'arts_culture':
-      recommended.push('tuscany', 'paris', 'dublin');
+      recommended.push('tuscany', 'paris', 'rome');
       break;
     case 'health_medical':
-      recommended.push('costa_rica', 'sedona', 'tuscany');
+      recommended.push('costa_rica', 'iceland', 'tuscany');
       break;
     case 'professional_trade':
-      recommended.push('ferrari', 'mykonos', 'napa');
+      recommended.push('monaco_gp', 'mykonos', 'swiss_summer');
       break;
     case 'faith_based':
-      recommended.push('dublin', 'tuscany', 'costa_rica');
+      recommended.push('dublin', 'rome', 'costa_rica');
       break;
     case 'children_youth':
     case 'social_services':
@@ -160,7 +174,7 @@ export function getRecommendedTrips(lead, classification) {
       break;
     default:
       // Best sellers as default
-      recommended.push('tuscany', 'kentucky_bourbon', 'costa_rica', 'dublin');
+      recommended.push('tuscany', 'kentucky_bourbon', 'costa_rica', 'nashville');
   }
 
   // 3. Limit to 4 unique trips

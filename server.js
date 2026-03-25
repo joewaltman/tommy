@@ -108,14 +108,34 @@ RULES FOR EMAIL WRITING:
 4. Reference specific details about their organization and mission
 5. Suggest 1-2 HGA products with a brief explanation of WHY it fits them
 6. Name 2-3 specific trip destinations that match their audience
-7. Include ONE concrete data point (e.g., "$13,000 raised from one trip package", "average winning bid of $4,500")
+7. Include ONE concrete data point from REAL TESTIMONIALS below
 8. End with a soft CTA - offer a call, free resource, or webinar invite
 9. Sign off as "Tommy Summa" with title "Nonprofit Partnerships, HGA"
 
 PRODUCT OVERVIEW:
-- Trips & Experiences: Consignment travel packages (no risk - nonprofit pays nothing upfront, items sell for $2,000-$8,000)
-- Golden Ticket: Raffle-style travel drawing ($100 tickets, drives engagement, easy to administer)
+- Trips & Experiences: Consignment travel packages (no risk - nonprofit pays nothing upfront)
+  - Budget-friendly: Las Vegas ($1,295), Nashville ($1,995), Punta Cana ($1,795)
+  - Mid-range: Tuscany ($2,495), Costa Rica ($2,495), Kentucky Bourbon ($2,495)
+  - Premium: Paris ($4,595), Swiss Summer ($4,995), Mykonos Villa for 6 ($10,995)
+  - Ultra-luxury: US Masters ($18,950), Monaco Grand Prix ($29,950)
+- Golden Ticket: Raffle-style travel drawing ($100 tickets, drives engagement)
 - Golf Prizes: Premium golf experiences for tournament silent auctions
+
+REAL SUCCESS STORIES (use these specific data points):
+- "We raised $30,000 at our inaugural event" - Elizabeth, Bourbon With Friends Charity
+- "One HGA auction item raised over $13,000" - Terri Bailey
+- "We raised over $13,000 with only two items" - Molly, Avila University
+- "Travel packages accounted for over 44% of our auction profits" - MDA Bangor
+- "We auctioned off a package and sold 12 that night!" - La Vernia Education Foundation
+- "Raised almost $10,000 on the Golden Ticket alone" - St. Martin's Episcopal School
+- "We were able to raise over $11K for new soccer goals" - Sandpoint Soccer Association
+- "Month-long campaign raised just over $14,000" - Ele's Place Capital Region
+
+DONOR FEEDBACK (proves the trips deliver):
+- "Every aspect of our visit has been well OVER THE TOP!" - Brent & Holly C., Nashville
+- "The trip was FLAWLESS!! Every detail was taken care of." - Joe V., Costa Rica
+- "Our trip exceeded our expectations and was perfect." - Robert S., Bordeaux
+- "People who take your trips ALWAYS come back saying how amazing it was" - Susan Norris, Rescuing Hope
 
 OUTPUT FORMAT - Return ONLY valid JSON:
 {
@@ -420,6 +440,27 @@ app.post('/api/mark-skipped', (req, res) => {
 
   lead.status = 'skipped';
   res.json({ success: true, message: 'Lead marked as skipped' });
+});
+
+// Update response status for sent emails
+app.post('/api/update-response', (req, res) => {
+  const { leadId, responseStatus } = req.body;
+
+  if (!['positive', 'negative', 'no_response', null].includes(responseStatus)) {
+    return res.status(400).json({ error: 'Invalid response status' });
+  }
+
+  const lead = leads.find(l => l.id === leadId);
+  if (!lead) {
+    return res.status(404).json({ error: 'Lead not found' });
+  }
+
+  if (lead.status !== 'sent') {
+    return res.status(400).json({ error: 'Can only update response for sent emails' });
+  }
+
+  lead.responseStatus = responseStatus;
+  res.json({ success: true, message: `Response marked as ${responseStatus || 'cleared'}` });
 });
 
 // Reset lead status

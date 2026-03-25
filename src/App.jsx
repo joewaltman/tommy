@@ -17,6 +17,39 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [responseFilter, setResponseFilter] = useState('all');
+  const [minDays, setMinDays] = useState('');
+  const [maxDays, setMaxDays] = useState('');
+
+  // Calculate days until annual event (ignores year, uses month/day only)
+  const getDaysUntilEvent = (dateOfEvent) => {
+    if (!dateOfEvent) return null;
+
+    // Parse MM/DD/YYYY or MM/DD format
+    const parts = dateOfEvent.split('/');
+    if (parts.length < 2) return null;
+
+    const eventMonth = parseInt(parts[0], 10) - 1; // JS months are 0-indexed
+    const eventDay = parseInt(parts[1], 10);
+
+    if (isNaN(eventMonth) || isNaN(eventDay)) return null;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Try this year first
+    let eventDate = new Date(today.getFullYear(), eventMonth, eventDay);
+
+    // If the date has passed this year, use next year
+    if (eventDate < today) {
+      eventDate = new Date(today.getFullYear() + 1, eventMonth, eventDay);
+    }
+
+    const diffTime = eventDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays;
+  };
 
   // Load leads on mount
   useEffect(() => {
@@ -226,6 +259,35 @@ export default function App() {
     }
   };
 
+  const handleUpdateResponse = async (leadId, responseStatus) => {
+    try {
+      await api.updateResponse(leadId, responseStatus);
+
+      setLeads(prevLeads => {
+        const updatedLeads = [...prevLeads];
+        const index = updatedLeads.findIndex(l => l.id === leadId);
+        if (index !== -1) {
+          updatedLeads[index] = { ...updatedLeads[index], responseStatus };
+        }
+        return updatedLeads;
+      });
+
+      // Update local storage
+      const state = loadState();
+      state.responseStatuses = state.responseStatuses || {};
+      if (responseStatus) {
+        state.responseStatuses[leadId] = responseStatus;
+      } else {
+        delete state.responseStatuses[leadId];
+      }
+      saveState(state);
+
+      showToast(responseStatus ? `Marked as ${responseStatus.replace('_', ' ')}` : 'Response cleared');
+    } catch (err) {
+      showToast('Failed to update response', 'error');
+    }
+  };
+
   const handleResetAll = () => {
     if (confirm('Reset all progress? This will clear all generated emails and statuses.')) {
       resetAll();
@@ -254,6 +316,32 @@ export default function App() {
     // Status filter
     if (statusFilter !== 'all' && lead.status !== statusFilter) {
       return false;
+    }
+
+    // Response filter (only applies to sent emails)
+    if (responseFilter !== 'all') {
+      if (lead.status !== 'sent') {
+        // If filtering by response, only show sent emails
+        return false;
+      }
+      if (responseFilter === 'untracked') {
+        if (lead.responseStatus) return false;
+      } else {
+        if (lead.responseStatus !== responseFilter) return false;
+      }
+    }
+
+    // Date filter (days until event)
+    if (minDays !== '' || maxDays !== '') {
+      const daysUntil = getDaysUntilEvent(lead.dateOfEvent);
+
+      if (daysUntil === null) {
+        // If no valid date, exclude when filtering by date
+        if (minDays !== '' || maxDays !== '') return false;
+      } else {
+        if (minDays !== '' && daysUntil < parseInt(minDays, 10)) return false;
+        if (maxDays !== '' && daysUntil > parseInt(maxDays, 10)) return false;
+      }
     }
 
     return true;
@@ -327,6 +415,12 @@ export default function App() {
             onCategoryChange={setCategoryFilter}
             statusFilter={statusFilter}
             onStatusChange={setStatusFilter}
+            responseFilter={responseFilter}
+            onResponseChange={setResponseFilter}
+            minDays={minDays}
+            onMinDaysChange={setMinDays}
+            maxDays={maxDays}
+            onMaxDaysChange={setMaxDays}
           />
         </div>
 
@@ -338,6 +432,7 @@ export default function App() {
             onSkip={handleSkip}
             onRegenerate={handleRegenerate}
             onResearchAndRegenerate={handleResearchAndRegenerate}
+            onUpdateResponse={handleUpdateResponse}
           />
         </div>
       </div>

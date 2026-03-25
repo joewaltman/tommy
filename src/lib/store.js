@@ -14,7 +14,8 @@ export function loadState() {
   return {
     leadStatuses: {}, // { leadId: status }
     generatedEmails: {}, // { leadId: emailData }
-    operatorNotes: {} // { leadId: notes }
+    operatorNotes: {}, // { leadId: notes }
+    responseStatuses: {} // { leadId: 'positive' | 'negative' | 'no_response' }
   };
 }
 
@@ -67,6 +68,7 @@ export function mergeServerState(leads, serverEmails) {
   return leads.map(lead => ({
     ...lead,
     status: state.leadStatuses[lead.id] || lead.status,
-    generatedEmail: state.generatedEmails[lead.id] || lead.generatedEmail
+    generatedEmail: state.generatedEmails[lead.id] || lead.generatedEmail,
+    responseStatus: state.responseStatuses?.[lead.id] || lead.responseStatus || null
   }));
 }
