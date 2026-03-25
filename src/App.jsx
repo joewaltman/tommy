@@ -87,13 +87,52 @@ export default function App() {
     setTimeout(() => setToast(null), 3000);
   }, []);
 
+  // Check if any filters are active
+  const hasActiveFilters = () => {
+    return searchQuery || categoryFilter !== 'all' || minDays !== '' || maxDays !== '';
+  };
+
+  // Get filtered "new" lead IDs for generation
+  const getFilteredNewLeadIds = () => {
+    return leads.filter(lead => {
+      // Must be new status
+      if (lead.status !== 'new') return false;
+
+      // Apply same filters as display
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        const matchesSearch =
+          lead.name.toLowerCase().includes(query) ||
+          lead.organization.toLowerCase().includes(query) ||
+          lead.email.toLowerCase().includes(query);
+        if (!matchesSearch) return false;
+      }
+
+      if (categoryFilter !== 'all' && lead.category !== categoryFilter) {
+        return false;
+      }
+
+      // Date filter
+      if (minDays !== '' || maxDays !== '') {
+        const daysUntil = getDaysUntilEvent(lead.dateOfEvent);
+        if (daysUntil === null) return false;
+        if (minDays !== '' && daysUntil < parseInt(minDays, 10)) return false;
+        if (maxDays !== '' && daysUntil > parseInt(maxDays, 10)) return false;
+      }
+
+      return true;
+    }).map(lead => lead.id);
+  };
+
   const handleGenerateBatch = async (count = 10) => {
     try {
       setGenerating(true);
       setGenerateProgress({ current: 0, total: count });
       setError(null);
 
-      const result = await api.generateBatch(count);
+      // Pass filtered lead IDs if filters are active
+      const leadIds = hasActiveFilters() ? getFilteredNewLeadIds() : null;
+      const result = await api.generateBatch(count, leadIds);
 
       // Update leads with new emails
       setLeads(prevLeads => {
@@ -406,6 +445,7 @@ export default function App() {
         <div className="w-72 bg-white border-r border-gray-200 p-4 overflow-y-auto">
           <ControlPanel
             stats={stats}
+            filteredNewCount={hasActiveFilters() ? getFilteredNewLeadIds().length : null}
             generating={generating}
             generateProgress={generateProgress}
             onGenerate={handleGenerateBatch}

@@ -27,10 +27,10 @@ export async function getStats() {
   return fetchJson('/stats');
 }
 
-export async function generateBatch(count = 10) {
+export async function generateBatch(count = 10, leadIds = null) {
   return fetchJson('/generate-batch', {
     method: 'POST',
-    body: JSON.stringify({ count })
+    body: JSON.stringify({ count, leadIds })
   });
 }
 

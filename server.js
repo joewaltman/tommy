@@ -263,7 +263,7 @@ app.get('/api/stats', (req, res) => {
 
 // Generate batch of emails
 app.post('/api/generate-batch', async (req, res) => {
-  const { count = 10 } = req.body;
+  const { count = 10, leadIds = null } = req.body;
 
   // Check cooldown
   const now = Date.now();
@@ -274,8 +274,17 @@ app.post('/api/generate-batch', async (req, res) => {
     });
   }
 
-  // Get next unprocessed leads
-  const newLeads = leads.filter(l => l.status === 'new').slice(0, count);
+  // Get leads to process - either from provided IDs or next unprocessed
+  let newLeads;
+  if (leadIds && Array.isArray(leadIds) && leadIds.length > 0) {
+    // Use specific lead IDs (filtered from frontend)
+    newLeads = leads
+      .filter(l => leadIds.includes(l.id) && l.status === 'new')
+      .slice(0, count);
+  } else {
+    // Fallback to next unprocessed leads
+    newLeads = leads.filter(l => l.status === 'new').slice(0, count);
+  }
 
   if (newLeads.length === 0) {
     return res.json({

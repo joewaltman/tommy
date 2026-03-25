@@ -2,6 +2,7 @@ import { CATEGORIES } from '../lib/classifier';
 
 export default function ControlPanel({
   stats,
+  filteredNewCount,
   generating,
   generateProgress,
   onGenerate,
@@ -18,15 +19,17 @@ export default function ControlPanel({
   maxDays,
   onMaxDaysChange
 }) {
+  const displayCount = filteredNewCount !== null ? filteredNewCount : stats.new;
+  const isFiltered = filteredNewCount !== null;
   return (
     <div className="space-y-6">
       {/* Generate Button */}
       <div>
         <button
           onClick={() => onGenerate(10)}
-          disabled={generating || stats.new === 0}
+          disabled={generating || displayCount === 0}
           className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${
-            generating || stats.new === 0
+            generating || displayCount === 0
               ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
               : 'bg-blue-600 text-white hover:bg-blue-700'
           }`}
@@ -41,7 +44,11 @@ export default function ControlPanel({
           )}
         </button>
         <p className="text-sm text-gray-500 mt-2 text-center">
-          {stats.new} leads remaining
+          {isFiltered ? (
+            <span>{displayCount} matching leads <span className="text-xs text-blue-500">(filtered)</span></span>
+          ) : (
+            `${stats.new} leads remaining`
+          )}
         </p>
       </div>
 
