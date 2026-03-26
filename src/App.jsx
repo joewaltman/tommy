@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import ControlPanel from './components/ControlPanel';
 import EmailQueue from './components/EmailQueue';
 import * as api from './lib/api';
-import { loadState, saveState, mergeServerState, resetAll } from './lib/store';
+import { loadState, saveState, mergeServerState, resetGenerated } from './lib/store';
 
 export default function App() {
   const [leads, setLeads] = useState([]);
@@ -327,11 +327,19 @@ export default function App() {
     }
   };
 
-  const handleResetAll = () => {
-    if (confirm('Reset all progress? This will clear all generated emails and statuses.')) {
-      resetAll();
-      loadLeads();
-      showToast('All progress reset');
+  const handleResetAll = async () => {
+    if (confirm('Reset generated emails? This will clear all generated (unsent) emails so you can regenerate them. Sent emails will not be affected.')) {
+      try {
+        // Reset on server
+        await api.resetAllGenerated();
+        // Reset local storage (preserves sent/skipped)
+        resetGenerated();
+        // Reload leads
+        await loadLeads();
+        showToast('Generated emails reset');
+      } catch (err) {
+        showToast('Failed to reset: ' + err.message, 'error');
+      }
     }
   };
 

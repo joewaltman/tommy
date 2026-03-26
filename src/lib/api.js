@@ -75,3 +75,9 @@ export async function updateResponse(leadId, responseStatus) {
     body: JSON.stringify({ leadId, responseStatus })
   });
 }
+
+export async function resetAllGenerated() {
+  return fetchJson('/reset-all-generated', {
+    method: 'POST'
+  });
+}

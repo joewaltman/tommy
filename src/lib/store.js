@@ -55,6 +55,26 @@ export function resetAll() {
   localStorage.removeItem(STORAGE_KEY);
 }
 
+// Reset only generated emails, preserve sent/skipped
+export function resetGenerated() {
+  const state = loadState();
+  const newState = {
+    leadStatuses: {},
+    generatedEmails: {},
+    operatorNotes: state.operatorNotes || {},
+    responseStatuses: state.responseStatuses || {}
+  };
+
+  // Keep sent and skipped statuses
+  Object.entries(state.leadStatuses || {}).forEach(([leadId, status]) => {
+    if (status === 'sent' || status === 'skipped') {
+      newState.leadStatuses[leadId] = status;
+    }
+  });
+
+  saveState(newState);
+}
+
 export function mergeServerState(leads, serverEmails) {
   const state = loadState();
 
