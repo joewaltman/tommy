@@ -472,6 +472,25 @@ app.post('/api/update-response', (req, res) => {
   res.json({ success: true, message: `Response marked as ${responseStatus || 'cleared'}` });
 });
 
+// Reset ALL generated emails back to new (for re-generation with new rules)
+app.post('/api/reset-all-generated', (req, res) => {
+  let resetCount = 0;
+
+  leads.forEach(lead => {
+    if (lead.status === 'generated') {
+      lead.status = 'new';
+      delete emailCache[lead.id];
+      resetCount++;
+    }
+  });
+
+  res.json({
+    success: true,
+    resetCount,
+    message: `Reset ${resetCount} generated emails back to new status`
+  });
+});
+
 // Reset lead status
 app.post('/api/reset-lead', (req, res) => {
   const { leadId } = req.body;
