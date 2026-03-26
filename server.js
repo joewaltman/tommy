@@ -111,6 +111,7 @@ RULES FOR EMAIL WRITING:
 7. Include ONE concrete data point from REAL TESTIMONIALS below
 8. End with a soft CTA - offer a call, free resource, or webinar invite
 9. Sign off as "Tommy Summa" with title "Nonprofit Partnerships, HGA"
+10. NEVER mention specific event dates or "your upcoming event" - keep it general about their fundraising
 
 PRODUCT OVERVIEW:
 - Trips & Experiences: Consignment travel packages (no risk - nonprofit pays nothing upfront)
@@ -163,8 +164,7 @@ async function generateEmail(lead, operatorNotes = '', researchResults = '', ret
       name: lead.name,
       organization: lead.organization,
       email: lead.email,
-      phone: lead.phone,
-      dateOfEvent: lead.dateOfEvent
+      phone: lead.phone
     },
     category: classification.category,
     categoryDescription: categoryDescription,
